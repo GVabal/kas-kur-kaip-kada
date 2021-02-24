@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class GameStateController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public List<GameState> makeNewGame(@RequestBody NewGameRequest game) {
-        var gameStateList = new ArrayList<GameState>();
+        List<GameState> gameStateList = new ArrayList<>();
         String gameId = generateId();
         for (int i = game.getPlayers().size() - 1; i >= 0; i--) {
             gameStateList.add(new GameState(
@@ -57,7 +58,7 @@ public class GameStateController {
 
     @PostMapping("{gameId}/move-content")
     public int moveContentToSentences(@PathVariable String gameId) {
-        var sentenceList = new ArrayList<Sentence>();
+        List<Sentence> sentenceList = new ArrayList<>();
         getGameById(gameId).forEach(gameState -> sentenceList.add(new Sentence(gameState.getContent())));
         sentenceRepository.saveAll(sentenceList);
         return sentenceList.size();
@@ -125,7 +126,7 @@ public class GameStateController {
     }
 
     private void shiftContent(List<GameState> gameStateList) {
-        var map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         gameStateList.forEach(gameState -> map.put(gameState.getNextIs(), gameState.getContent()));
         gameStateList.forEach(gameState -> gameState.setContent(map.get(gameState.getName())));
     }
